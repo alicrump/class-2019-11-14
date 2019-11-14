@@ -1,0 +1,42 @@
+---
+title: "class"
+author: "Ali Crump"
+date: "11/14/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(googlesheets4)
+library(tidyverse)
+library(ggplot2)
+library(broom)
+```
+
+```{r}
+sheets_deauth()
+x <- read_sheet("1QA_Xv9tAbKhwFdQpnVa2hTjhEdg5zAl4WY5EVanWSo0")
+```
+```{r}
+ggplot(x, aes(x = dem_adv, y = dvote)) +
+geom_jitter(height = 0.1, width = 0.1, alpha = 0.2) +
+geom_smooth(method = "lm", se = FALSE)
+```
+```{r}
+model <- glm(data = x, family = "binomial", formula = dvote ~ female)
+print(model)
+summary(model)
+```
+
+
+```{r}
+model %>% 
+  tidy()
+```
+```{r}
+ggplot(x, aes(x = female, y = dvote)) +
+geom_jitter(height = 0.1, width = 0.1, alpha = 0.2) +
+geom_smooth(method = "glm", se = FALSE, method.args = list(family = "binomial"))
+```
+ 
